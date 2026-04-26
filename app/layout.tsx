@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { Toaster } from "@/components/ui/sonner";
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Doc Assist",
@@ -17,7 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", inter.variable)}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ReactQueryProvider>
+          <Toaster />
+          <Navbar />
+          {children}
+          <Footer />
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }
