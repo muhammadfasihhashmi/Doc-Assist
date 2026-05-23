@@ -1,11 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
+import { RegisterFormSchema, RegisterFormType } from "@/lib/Zod/AuthSchemas";
+
+import { patientSignup } from "@/services/auth.services";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -14,12 +24,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RegisterFormType, RegisterFormSchema } from "@/lib/Zod/AuthSchemas";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { patientSignup } from "@/services/auth.services";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,54 +44,37 @@ export default function RegisterPage() {
   const { mutate: patientSignupApi, isPending } = useMutation({
     mutationKey: ["auth.patient.signup"],
     mutationFn: patientSignup,
+
     onSuccess: () => {
       toast.success("Account created successfully");
       form.reset();
       router.push("/login");
     },
+
     onError: (error) => {
       toast.error(error?.message || "Something went wrong");
     },
   });
 
-  async function onSubmit(values: RegisterFormType) {
+  function onSubmit(values: RegisterFormType) {
     if (isPending) return;
     patientSignupApi(values);
   }
 
   return (
-    <div className="min-h-screen bg-violet-50/40 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 bg-violet-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <rect x="11" y="5" width="2" height="14" fill="white" />
-              <rect x="5" y="11" width="14" height="2" fill="white" />
-              <circle
-                cx="12"
-                cy="12"
-                r="9"
-                stroke="white"
-                strokeWidth="1.5"
-                fill="none"
-              />
-            </svg>
-          </div>
-          <span className="text-base font-semibold text-violet-950 tracking-tight">
-            DocAssist
-          </span>
-        </div>
-
-        <Card className="border-violet-200 shadow-sm">
-          <CardContent className="pt-6 pb-6 px-6">
+    <div className="relative flex min-h-[90vh] items-center justify-center overflow-hidden px-4 py-10">
+      <div className="relative z-10 w-full max-w-2xl">
+        <Card className="overflow-hidden rounded-[28px] border border-violet-100 bg-white/90 shadow-sm backdrop-blur-xl">
+          <CardContent className="">
             {/* Header */}
-            <div className="mb-6">
-              <h1 className="text-xl font-bold text-violet-950 tracking-tight mb-1">
+            <div className="mb-8 text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-violet-950">
                 Create your account
               </h1>
-              <p className="text-sm text-slate-500">
-                Join DocAssist and book appointments instantly
+
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                Join DocAssist and book appointments with trusted doctors
+                instantly.
               </p>
             </div>
 
@@ -93,171 +82,183 @@ export default function RegisterPage() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-4"
+                className="space-y-5"
               >
-                {/* Full Name */}
-                <FormField
-                  control={form.control}
-                  name="fullName"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
-                      <FormLabel className="text-xs font-medium text-violet-950">
-                        Full name
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Muhammad Ali"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+                {/* Name + Email */}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {/* Full Name */}
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className="text-sm font-medium text-slate-700">
+                          Full name
+                        </FormLabel>
 
-                {/* Email */}
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
-                      <FormLabel className="text-xs font-medium text-violet-950">
-                        Email address
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="you@example.com"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+                        <FormControl>
+                          <Input
+                            placeholder="Muhammad Ali"
+                            className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Email */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className="text-sm font-medium text-slate-700">
+                          Email address
+                        </FormLabel>
+
+                        <FormControl>
+                          <Input
+                            placeholder="you@example.com"
+                            className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 {/* Phone */}
                 <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
-                      <FormLabel className="text-xs font-medium text-violet-950">
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700">
                         Phone number
                       </FormLabel>
+
                       <FormControl>
                         <Input
                           type="tel"
                           placeholder="+92 300 0000000"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
+                          className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
                           {...field}
                         />
                       </FormControl>
+
                       <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
 
-                {/* Password */}
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
-                      <FormLabel className="text-xs font-medium text-violet-950">
-                        Password
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+                {/* Passwords */}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {/* Password */}
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className="text-sm font-medium text-slate-700">
+                          Password
+                        </FormLabel>
 
-                {/* Confirm Password */}
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
-                      <FormLabel className="text-xs font-medium text-violet-950">
-                        Confirm password
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Confirm Password */}
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className="text-sm font-medium text-slate-700">
+                          Confirm password
+                        </FormLabel>
+
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="••••••••"
+                            className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
+                            {...field}
+                          />
+                        </FormControl>
+
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 {/* Terms */}
-                <p className="text-xs text-slate-400 leading-relaxed mt-2">
-                  By creating an account you agree to our{" "}
+                <p className="text-xs leading-relaxed text-slate-500">
+                  By creating an account, you agree to our{" "}
                   <Link
-                    href="#"
-                    className="text-violet-800 hover:text-violet-950 font-medium transition-colors"
+                    href="/terms"
+                    className="font-medium text-violet-700 transition-colors hover:text-violet-900"
                   >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
                   <Link
-                    href="#"
-                    className="text-violet-800 hover:text-violet-950 font-medium transition-colors"
+                    href="/privacy-policy"
+                    className="font-medium text-violet-700 transition-colors hover:text-violet-900"
                   >
                     Privacy Policy
                   </Link>
+                  .
                 </p>
 
                 {/* Submit */}
                 <Button
                   type="submit"
-                  className="w-full bg-violet-800 hover:bg-violet-900 text-white text-sm font-semibold rounded-lg mt-1 shadow-none"
                   disabled={isPending}
+                  className="h-12 w-full rounded-xl bg-violet-700 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all hover:bg-violet-800 hover:shadow-violet-300"
                 >
-                  Create account
+                  {isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </form>
             </Form>
 
             {/* Divider */}
-            <div className="flex items-center gap-3 my-5">
-              <Separator className="flex-1 bg-violet-100" />
-              <span className="text-xs text-slate-400">or</span>
-              <Separator className="flex-1 bg-violet-100" />
+            <div className="my-7 flex items-center gap-3">
+              <Separator className="bg-violet-100" />
             </div>
 
-            {/* Login link */}
-            <p className="text-center text-xs text-slate-500">
+            {/* Login */}
+            <p className="text-center text-sm text-slate-500">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-violet-800 hover:text-violet-950 font-semibold transition-colors"
+                className="font-semibold text-violet-700 transition-colors hover:text-violet-900"
               >
                 Sign in
               </Link>
             </p>
           </CardContent>
         </Card>
-
-        {/* Back to home */}
-        <p className="text-center text-xs text-slate-400 mt-6">
-          <Link href="/" className="hover:text-violet-800 transition-colors">
-            ← Back to home
-          </Link>
-        </p>
       </div>
     </div>
   );

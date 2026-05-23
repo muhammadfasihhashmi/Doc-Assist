@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { loginUser } from "@/services/auth.services";
+import { LoginFormSchema, LoginFormType } from "@/lib/Zod/AuthSchemas";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -15,9 +19,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { LoginFormType, LoginFormSchema } from "@/lib/Zod/AuthSchemas";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const form = useForm<LoginFormType>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -26,43 +33,47 @@ export default function LoginPage() {
     },
   });
 
+  const { mutate: loginUserApi, isPending } = useMutation({
+    mutationFn: loginUser,
+
+    onSuccess: (data) => {
+      toast.success("Login successful!");
+
+      if (!data?.role || !data?.user) return;
+
+      const roleRoutes = {
+        patient: "/patient/dashboard",
+        doctor: "/doctor/dashboard",
+        hospital: "/hospital/dashboard",
+        admin: "/admin/dashboard",
+      };
+
+      router.push(roleRoutes[data.role as keyof typeof roleRoutes]);
+    },
+
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
   function onSubmit(values: LoginFormType) {
-    console.log("Login Form Data:", values);
+    loginUserApi(values);
   }
 
   return (
-    <div className="min-h-screen bg-violet-50/40 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 bg-violet-800 rounded-lg flex items-center justify-center flex-shrink-0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <rect x="11" y="5" width="2" height="14" fill="white" />
-              <rect x="5" y="11" width="14" height="2" fill="white" />
-              <circle
-                cx="12"
-                cy="12"
-                r="9"
-                stroke="white"
-                strokeWidth="1.5"
-                fill="none"
-              />
-            </svg>
-          </div>
-          <span className="text-base font-semibold text-violet-950 tracking-tight">
-            DocAssist
-          </span>
-        </div>
-
-        <Card className="border-violet-200 shadow-sm">
-          <CardContent className="pt-6 pb-6 px-6">
-            {/* Header */}
-            <div className="mb-6">
-              <h1 className="text-xl font-bold text-violet-950 tracking-tight mb-1">
+    <div className="relative flex min-h-[90vh] items-center justify-center overflow-hidden px-4">
+      <div className="relative z-10 w-full max-w-md ">
+        {/* Card */}
+        <Card className="overflow-hidden rounded-3xl border border-violet-100 bg-white/90 shadow-sm backdrop-blur-xl">
+          <CardContent className="p-8 sm:p-10">
+            {/* Heading */}
+            <div className="mb-8 text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-violet-950">
                 Welcome back
               </h1>
-              <p className="text-sm text-slate-500">
-                Sign in to your DocAssist account
+
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                Sign in to continue your healthcare journey with DocAssist
               </p>
             </div>
 
@@ -70,24 +81,26 @@ export default function LoginPage() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-4"
+                className="space-y-5"
               >
                 {/* Email */}
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
-                      <FormLabel className="text-xs font-medium text-violet-950">
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700">
                         Email address
                       </FormLabel>
+
                       <FormControl>
                         <Input
                           placeholder="you@example.com"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
+                          className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
                           {...field}
                         />
                       </FormControl>
+
                       <FormMessage className="text-xs" />
                     </FormItem>
                   )}
@@ -98,26 +111,29 @@ export default function LoginPage() {
                   control={form.control}
                   name="password"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1.5 space-y-0">
+                    <FormItem className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <FormLabel className="text-xs font-medium text-violet-950">
+                        <FormLabel className="text-sm font-medium text-slate-700">
                           Password
                         </FormLabel>
+
                         <Link
                           href="/forgot-password"
-                          className="text-xs text-violet-800 hover:text-violet-950 transition-colors font-medium"
+                          className="text-xs font-medium text-violet-700 transition-colors hover:text-violet-900"
                         >
                           Forgot password?
                         </Link>
                       </div>
+
                       <FormControl>
                         <Input
                           type="password"
                           placeholder="••••••••"
-                          className="border-violet-200 focus-visible:ring-violet-400 text-sm placeholder:text-slate-400"
+                          className="h-12 rounded-xl border-violet-200 bg-white text-sm shadow-sm transition-all placeholder:text-slate-400 focus-visible:border-violet-400 focus-visible:ring-violet-300"
                           {...field}
                         />
                       </FormControl>
+
                       <FormMessage className="text-xs" />
                     </FormItem>
                   )}
@@ -126,39 +142,35 @@ export default function LoginPage() {
                 {/* Submit */}
                 <Button
                   type="submit"
-                  className="w-full bg-violet-800 hover:bg-violet-900 text-white text-sm font-semibold rounded-lg mt-1 shadow-none"
+                  disabled={isPending}
+                  className="h-12 w-full rounded-xl bg-violet-700 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all hover:bg-violet-800 hover:shadow-violet-300"
                 >
-                  Sign in
+                  {isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
             </Form>
 
             {/* Divider */}
-            <div className="flex items-center gap-3 my-5">
-              <Separator className="flex-1 bg-violet-100" />
-              <span className="text-xs text-slate-400">or</span>
-              <Separator className="flex-1 bg-violet-100" />
+            <div className="my-7 flex items-center gap-3">
+              <Separator className="bg-violet-100" />
             </div>
 
-            {/* Register link */}
-            <p className="text-center text-xs text-slate-500">
+            {/* Register */}
+            <p className="text-center text-sm text-slate-500">
               Don&apos;t have an account?{" "}
               <Link
                 href="/register"
-                className="text-violet-800 hover:text-violet-950 font-semibold transition-colors"
+                className="font-semibold text-violet-700 transition-colors hover:text-violet-900"
               >
-                Create one free
+                Create one for free
               </Link>
             </p>
           </CardContent>
         </Card>
-
-        {/* Back to home */}
-        <p className="text-center text-xs text-slate-400 mt-6">
-          <Link href="/" className="hover:text-violet-800 transition-colors">
-            ← Back to home
-          </Link>
-        </p>
       </div>
     </div>
   );

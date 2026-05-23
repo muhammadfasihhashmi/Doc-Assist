@@ -1,115 +1,75 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import heroImage from "@/assets/images/heroImage.png";
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-b from-violet-100 to-violet-50 px-4 sm:px-6 lg:px-8 pt-16 pb-14">
-      <div className="max-w-6xl mx-auto text-center">
-        {/* Top Badge */}
-        <Badge
-          variant="secondary"
-          className="bg-violet-100 hover:bg-violet-100 mb-5 px-4 py-1.5 text-xs font-medium rounded-full"
-          style={{ color: "#5B21B6" }}
-        >
-          Pakistan&apos;s Premium Healthcare Platform
-        </Badge>
+    <section className="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden rounded-[32px] bg-violet-50 px-6 py-14 sm:px-10 lg:px-14">
+        <div className="relative z-10 flex flex-col items-center gap-14 lg:flex-row lg:justify-around">
+          {/* Left Content */}
+          <div className="max-w-2xl text-center lg:text-left">
+            {/* Badge */}
+            <Badge className="mb-6 rounded-full border border-violet-200 bg-violet-100 px-4 py-1.5 text-xs font-medium text-violet-700 hover:bg-violet-100">
+              Pakistan&apos;s Premium Healthcare Platform
+            </Badge>
 
-        {/* Headline */}
-        <h1
-          className="text-3xl sm:text-4xl lg:text-[52px] font-bold leading-tight max-w-2xl mx-auto mb-4 tracking-tight"
-          style={{ color: "#2E1065" }}
-        >
-          Find the right doctor,{" "}
-          <span style={{ color: "#5B21B6" }}>book in seconds</span>
-        </h1>
+            {/* Heading */}
+            <h1 className="text-4xl font-bold leading-tight tracking-tight text-violet-950 sm:text-5xl lg:text-6xl">
+              Find the right doctor,
+              <span className="block text-violet-700">book in seconds</span>
+            </h1>
 
-        {/* Subtext */}
-        <p className="text-sm sm:text-base text-slate-500 max-w-lg mx-auto mb-8 leading-relaxed">
-          Connect with verified doctors across top hospitals. Book appointments
-          online and manage your health journey — all in one place.
-        </p>
+            {/* Description */}
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg lg:max-w-2xl">
+              Connect with verified doctors across top hospitals. Book
+              appointments online and manage your healthcare journey — all in
+              one secure and seamless platform.
+            </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-          <Button
-            size="lg"
-            className="text-white rounded-xl px-7 text-sm font-semibold shadow-none hover:opacity-90 transition-opacity"
-            style={{ background: "#5B21B6" }}
-            asChild
-          >
-            <Link href="/register">Book Appointment</Link>
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="rounded-xl px-7 text-sm font-semibold hover:bg-violet-50 transition-colors"
-            style={{ borderColor: "#C4B5FD", color: "#5B21B6" }}
-            asChild
-          >
-            <Link href="/doctors">Browse Doctors</Link>
-          </Button>
-        </div>
-
-        {/* Search Bar */}
-        <div className="bg-white border border-violet-200 rounded-2xl p-3 max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 sm:gap-0 sm:items-center shadow-sm">
-          {/* Specialization */}
-          <div className="flex items-center gap-2 flex-1 px-3">
-            <Search
-              size={15}
-              className="flex-shrink-0"
-              style={{ color: "#6D28D9" }}
-            />
-            <div>
-              <p
-                className="text-xs font-medium mb-0.5"
-                style={{ color: "#6D28D9" }}
+            {/* CTA Buttons */}
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+              <Button
+                size="lg"
+                className="h-12 rounded-xl bg-violet-700 px-8 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all hover:bg-violet-800 hover:shadow-violet-300"
+                asChild
               >
-                Specialization
+                <Link href="/register">Book Appointment</Link>
+              </Button>
+
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 rounded-xl border-violet-300 bg-white px-8 text-sm font-semibold text-violet-700 transition-all hover:bg-violet-50 hover:text-violet-800"
+                asChild
+              >
+                <Link href="/doctors">Browse Doctors</Link>
+              </Button>
+            </div>
+
+            {/* Trust Line */}
+            <div className="mt-8 flex flex-col items-center gap-3 text-sm text-slate-500 sm:flex-row justify-center lg:justify-start">
+              <div className="flex -space-x-3">
+                <div className="h-10 w-10 rounded-full border-2 border-white bg-gray-400" />
+                <div className="h-10 w-10 rounded-full border-2 border-white bg-gray-400" />
+                <div className="h-10 w-10 rounded-full border-2 border-white bg-gray-400" />
+              </div>
+
+              <p>
+                Trusted by{" "}
+                <span className="font-semibold text-violet-700">50,000+</span>{" "}
+                patients across Pakistan
               </p>
-              <p className="text-sm text-slate-400">e.g. Cardiologist</p>
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="hidden sm:block w-px h-10 bg-violet-200" />
-
-          {/* City */}
-          <div className="flex items-center gap-2 flex-1 px-3">
-            <MapPin
-              size={15}
-              className="flex-shrink-0"
-              style={{ color: "#6D28D9" }}
-            />
-            <div>
-              <p
-                className="text-xs font-medium mb-0.5"
-                style={{ color: "#6D28D9" }}
-              >
-                City
-              </p>
-              <p className="text-sm text-slate-400">e.g. Lahore</p>
-            </div>
+          {/* Image Container */}
+          <div className="relative h-[500px] w-[600px] overflow-hidden rounded-[32px] hidden xl:block ">
+            <Image src={heroImage} alt="Doctor consultation" fill priority />
           </div>
-
-          <Button
-            className="text-white rounded-xl px-6 py-5 text-sm font-semibold shadow-none hover:opacity-90 transition-opacity sm:ml-1"
-            style={{ background: "#5B21B6" }}
-            asChild
-          >
-            <Link href="/doctors">Search</Link>
-          </Button>
         </div>
-
-        {/* Trust Line */}
-        <p className="text-xs text-slate-400 mt-5">
-          Trusted by{" "}
-          <span className="font-medium" style={{ color: "#5B21B6" }}>
-            50,000+
-          </span>{" "}
-          patients across Pakistan
-        </p>
       </div>
     </section>
   );

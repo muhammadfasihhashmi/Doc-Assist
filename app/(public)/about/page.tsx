@@ -11,6 +11,7 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
+import CTABanner from "@/components/features/home/Ctabanner";
 
 const stats = [
   { value: "500+", label: "Verified Doctors" },
@@ -230,7 +231,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── TEAM ── */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-violet-100">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-xs font-semibold text-violet-800 uppercase tracking-widest mb-3">
@@ -266,32 +267,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-violet-800">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-3">
-            Ready to get started?
-          </h2>
-          <p className="text-sm text-violet-300 mb-8 leading-relaxed">
-            Join thousands of patients already using DocAssist to manage their
-            health.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              className="bg-white text-violet-800 hover:bg-violet-50 font-semibold rounded-lg px-7 shadow-none"
-              asChild
-            >
-              <Link href="/register">Create free account</Link>
-            </Button>
-            <Button
-              variant="outline"
-              className="border-violet-600 text-white hover:bg-violet-700 hover:border-violet-500 rounded-lg px-7 bg-transparent"
-              asChild
-            >
-              <Link href="/contact">Contact us</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTABanner />
     </div>
   );
 }

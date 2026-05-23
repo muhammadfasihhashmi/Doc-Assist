@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Logo from "@/assets/images/docAssisteLogo_processed.png";
 
 const navLinks = [
   { label: "Doctors", href: "/doctors" },
@@ -16,124 +18,105 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-violet-200">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-9">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: "#5B21B6" }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <rect x="11" y="5" width="2" height="14" fill="white" />
-                <rect x="5" y="11" width="14" height="2" fill="white" />
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="9"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  fill="none"
-                />
-              </svg>
+          <Link href="/">
+            <div className="relative h-22 w-50">
+              <Image
+                src={Logo}
+                alt="logo"
+                fill
+                sizes="auto"
+                className="object-contain"
+                priority
+              />
             </div>
-            <span
-              className="text-base font-semibold tracking-tight"
-              style={{ color: "#2E1065" }}
-            >
-              DocAssist
-            </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden items-center gap-1 rounded-full border border-violet-100 bg-white/70 p-1 shadow-sm lg:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium transition-colors"
-                style={{ color: "#6D28D9" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#2E1065")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#6D28D9")}
+                className="rounded-full px-5 py-2 text-sm font-medium text-slate-600 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Auth Buttons Desktop */}
-          <div className="hidden sm:flex items-center gap-2">
+          {/* Desktop Actions */}
+          <div className="hidden items-center gap-3 lg:flex">
             <Button
               variant="ghost"
-              className="text-sm font-medium transition-colors hover:bg-violet-50"
-              style={{ color: "#5B21B6" }}
+              className="rounded-xl text-sm font-medium text-violet-700 hover:bg-violet-50 hover:text-violet-800"
               asChild
             >
               <Link href="/login">Login</Link>
             </Button>
+
             <Button
-              className="text-white rounded-lg text-sm font-medium shadow-none border-0"
-              style={{ background: "#5B21B6" }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.background = "#4C1D95")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.background = "#5B21B6")
-              }
+              className="h-11 rounded-xl bg-violet-700 px-6 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition-all hover:bg-violet-800 hover:shadow-violet-300"
               asChild
             >
               <Link href="/register">Register</Link>
             </Button>
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Toggle */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-violet-50 transition-colors"
-            style={{ color: "#5B21B6" }}
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={() => setMobileOpen((prev) => !prev)}
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-violet-100 bg-white text-violet-700 transition-colors hover:bg-violet-50 lg:hidden"
+            aria-label="Toggle menu"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-violet-200 px-4 py-4 flex flex-col gap-3">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="text-sm font-medium py-1 transition-colors hover:opacity-80"
-              style={{ color: "#6D28D9" }}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="flex gap-2 pt-2 border-t border-violet-200">
+      {/* Mobile Menu */}
+      <div
+        className={`overflow-hidden border-t border-violet-100 bg-white transition-all duration-300 lg:hidden ${
+          mobileOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="container mx-auto flex flex-col px-4 py-5 sm:px-6">
+          {/* Links */}
+          <nav className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-xl px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-violet-50 hover:text-violet-700"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Buttons */}
+          <div className="mt-5 flex flex-col gap-3 border-t border-violet-100 pt-5">
             <Button
               variant="outline"
-              className="flex-1 text-sm font-medium bg-transparent hover:bg-violet-50"
-              style={{
-                borderColor: "#C4B5FD",
-                color: "#5B21B6",
-              }}
+              className="h-11 rounded-xl border-violet-200 text-sm font-medium text-violet-700 hover:bg-violet-50"
               asChild
             >
               <Link href="/login">Login</Link>
             </Button>
+
             <Button
-              className="flex-1 text-white text-sm font-medium shadow-none border-0"
-              style={{ background: "#5B21B6" }}
+              className="h-11 rounded-xl bg-violet-700 text-sm font-semibold text-white hover:bg-violet-800"
               asChild
             >
               <Link href="/register">Register</Link>
             </Button>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

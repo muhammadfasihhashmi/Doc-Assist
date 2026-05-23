@@ -25,7 +25,7 @@ const specializations = [
 
 export default function Specializations() {
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-violet-50/50">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-violet-50/50 xl:container xl:mx-auto xl:rounded-3xl mt-12">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

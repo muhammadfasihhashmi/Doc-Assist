@@ -3,7 +3,6 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -25,7 +24,6 @@ export default function RootLayout({
           <Toaster />
           <Navbar />
           {children}
-          <Footer />
         </ReactQueryProvider>
       </body>
     </html>

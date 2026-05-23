@@ -1,66 +1,87 @@
 import Link from "next/link";
+import Logo from "@/assets/images/docAssisteLogo_processed.png";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 const footerLinks = {
   Platform: [
     { label: "Find Doctors", href: "/doctors" },
     { label: "Hospitals", href: "/hospitals" },
-    { label: "Specializations", href: "/doctors" },
+    { label: "Specializations", href: "/specializations" },
     { label: "Book Appointment", href: "/register" },
   ],
   Company: [
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
-    { label: "Careers", href: "#" },
-    { label: "Blog", href: "#" },
+    { label: "Careers", href: "/careers" },
+    { label: "Blog", href: "/blog" },
   ],
   Legal: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Cookie Policy", href: "#" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Cookie Policy", href: "/cookies" },
   ],
 };
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-violet-200 px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
+    <footer className="mt-24 border-t border-violet-100 bg-gradient-to-b from-white to-violet-50/60">
+      <div className="container mx-auto px-4 py-14 sm:px-6 lg:px-8">
+        {/* Top Section */}
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
-          <div className="col-span-2 sm:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
-              <div
-                className="w-7 h-7 rounded-lg flex-shrink-0"
-                style={{ background: "#5B21B6" }}
-              />
-              <span
-                className="text-sm font-semibold"
-                style={{ color: "#2E1065" }}
-              >
-                DocAssist
-              </span>
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-[180px]">
-              Connecting patients with the best verified doctors across
-              Pakistan.
+          <div className="lg:col-span-2">
+            <Link href="/">
+              <div className="relative h-22 w-50">
+                <Image
+                  src={Logo}
+                  alt="logo"
+                  fill
+                  sizes="auto"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </Link>
+
+            <p className="mt-5 max-w-md text-sm leading-relaxed text-slate-600">
+              Connecting patients with trusted and verified doctors across
+              Pakistan. Book appointments instantly and manage your healthcare
+              journey with ease.
             </p>
+
+            {/* Mini Stats */}
+            <div className="mt-6 flex flex-wrap gap-6">
+              <div>
+                <p className="text-2xl font-bold text-violet-700">50k+</p>
+                <p className="text-sm text-slate-500">Patients</p>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold text-violet-700">2k+</p>
+                <p className="text-sm text-slate-500">Verified Doctors</p>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold text-violet-700">120+</p>
+                <p className="text-sm text-slate-500">Hospitals</p>
+              </div>
+            </div>
           </div>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section}>
-              <p
-                className="text-xs font-semibold mb-3"
-                style={{ color: "#2E1065" }}
-              >
+              <h3 className="text-sm font-semibold tracking-wide text-violet-950">
                 {section}
-              </p>
-              <div className="flex flex-col gap-2.5">
+              </h3>
+
+              <div className="mt-5 flex flex-col gap-3">
                 {links.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="text-xs text-slate-400 hover:text-[#5B21B6] transition-colors"
+                    className="w-fit text-sm text-slate-600 transition-colors hover:text-violet-700"
                   >
                     {link.label}
                   </Link>
@@ -70,15 +91,22 @@ export default function Footer() {
           ))}
         </div>
 
-        <Separator style={{ background: "#EDE9FE" }} className="mb-6" />
+        {/* Divider */}
+        <Separator className="my-10 bg-violet-100" />
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-slate-400">
+        {/* Bottom */}
+        <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+          <p className="text-sm text-slate-500">
             © 2026 DocAssist. All rights reserved.
           </p>
-          <p className="text-xs text-slate-400">
-            Made with care in Pakistan 🇵🇰
-          </p>
+
+          <div className="flex items-center gap-5 text-sm text-slate-500">
+            <span>Made with care in Pakistan 🇵🇰</span>
+
+            <div className="hidden h-4 w-px bg-violet-200 sm:block" />
+
+            <span className="hidden sm:block">Secure • Trusted • Verified</span>
+          </div>
         </div>
       </div>
     </footer>

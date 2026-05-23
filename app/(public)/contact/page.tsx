@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import CTABanner from "@/components/features/home/Ctabanner";
 
 const contactInfo = [
   {
@@ -171,8 +172,10 @@ export default function ContactPage() {
         </div>
       </section>
 
+      <CTABanner />
+
       {/* ── FAQ ── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-20 border-t border-violet-100 bg-gradient-to-b from-slate-50 to-white">
+      <section className="mt-24 px-4 sm:px-6 lg:px-8 py-20 border-t border-violet-100 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-slate-900 mb-2">
