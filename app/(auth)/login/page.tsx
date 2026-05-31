@@ -48,7 +48,7 @@ export default function LoginPage() {
         admin: "/admin/dashboard",
       };
 
-      router.push(roleRoutes[data.role as keyof typeof roleRoutes]);
+      window.location.href = roleRoutes[data.role as keyof typeof roleRoutes];
     },
 
     onError: (error: Error) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import {
@@ -12,11 +12,12 @@ import {
   LogOut,
   ChevronRight,
   Menu,
-  X,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 const navItems = [
   {
@@ -80,17 +81,17 @@ export default function HospitalLayout({
       </div>
 
       {/* ───────────────── MAIN CONTENT ───────────────── */}
-      <div className="flex-1 lg:pl-[320px] flex flex-col min-h-screen">
+      <div className="flex min-h-screen flex-1 flex-col lg:pl-[320px]">
         <button
           onClick={() => setMobileOpen(true)}
-          className="ml-8 lg:hidden flex h-11 w-11 items-center justify-center rounded-2xl border border-violet-100 bg-white text-slate-600 transition-colors hover:bg-violet-50 hover:text-violet-700"
+          className="ml-8 flex h-11 w-11 items-center justify-center rounded-2xl border border-violet-100 bg-white text-slate-600 transition-colors hover:bg-violet-50 hover:text-violet-700 lg:hidden"
         >
           <Menu size={18} />
         </button>
 
         {/* Rounded Content Window */}
         <main className="flex-1 p-4 sm:p-6">
-          <div className="min-h-[calc(100vh-110px)] rounded-[32px] border border-slate-200/70 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="min-h-[calc(100vh-110px)] rounded-[32px] border border-slate-200/70 bg-white p-4 shadow-sm sm:p-6">
             {children}
           </div>
         </main>
@@ -105,11 +106,28 @@ function Sidebar({
   setMobileOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signOut();
+
+    queryClient.removeQueries({
+      queryKey: ["navbar-profile"],
+    });
+
+    setMobileOpen(false);
+
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <>
       {/* Header */}
-      <div className="lg:mt-20 border-b border-violet-100 px-5 py-5">
+      <div className="border-b border-violet-100 px-5 py-5 lg:mt-20">
         {/* User Card */}
         <div className="flex items-center gap-3 rounded-2xl bg-violet-50 p-3">
           <Avatar className="h-12 w-12 border border-violet-200">
@@ -170,6 +188,7 @@ function Sidebar({
       <div className="border-t border-violet-100 p-4">
         <Button
           variant="ghost"
+          onClick={handleLogout}
           className="h-12 w-full justify-start rounded-2xl px-4 text-sm font-medium text-slate-500 hover:bg-red-50 hover:text-red-600"
         >
           <LogOut className="mr-3 size-4" />

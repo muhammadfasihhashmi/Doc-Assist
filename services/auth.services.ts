@@ -54,6 +54,7 @@ export async function loginUser({ email, password }: LoginFormType) {
     if (profileError) {
       throw new Error(profileError.message);
     }
+    console.log(data);
 
     return {
       user: data.user,
